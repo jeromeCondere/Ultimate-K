@@ -5,13 +5,13 @@ import android.graphics.Paint;
 
 public class Circle extends AbstractGraphics {
 
-	public Circle(int X,int Y,float R,Paint p)
+	public Circle(float X,float Y,float R,Paint p)
 	{
 		super(X,Y,p);
 		
 		radius=R;
 	}
-	public Circle(int X,int Y,float R)
+	public Circle(float X,float Y,float R)
 	{
 		super(X,Y);
 		radius=R;
@@ -22,6 +22,10 @@ public class Circle extends AbstractGraphics {
 		radius=10;//default value
 		
 		
+	}
+	public float getRadius()
+	{
+		return radius;
 	}
 	@Override
 	public void draw(Canvas canvas) {

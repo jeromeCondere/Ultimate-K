@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 public abstract class AbstractGraphics implements Graphics {
 
-	public AbstractGraphics(int X,int Y)
+	public AbstractGraphics(float X,float Y)
 	{
 		x=X;
 		y=Y;
@@ -16,7 +16,7 @@ public abstract class AbstractGraphics implements Graphics {
 		y=0;
 		//we don't initialize paint-> the users must do it otherwise we don't draw
 	}
-	public AbstractGraphics(int X,int Y,Paint p)
+	public AbstractGraphics(float X,float Y,Paint p)
 	{
 		x=X;
 		y=Y;
@@ -25,13 +25,13 @@ public abstract class AbstractGraphics implements Graphics {
 	}
 	
 	@Override
-	public int getX() {
+	public float getX() {
 		// TODO Auto-generated method stub
 		return x;
 	}
 
 	@Override
-	public int getY() {
+	public float getY() {
 		// TODO Auto-generated method stub
 		return y;
 	}
@@ -41,13 +41,13 @@ public abstract class AbstractGraphics implements Graphics {
 	}
 
 	@Override
-	public void setX(int X) {
+	public void setX(float X) {
 		// TODO Auto-generated method stub
      x=X;
 	}
 
 	@Override
-	public void setY(int Y) {
+	public void setY(float Y) {
 		// TODO Auto-generated method stub
       y=Y;
 	}
@@ -61,33 +61,33 @@ public abstract class AbstractGraphics implements Graphics {
 	
 	
 	@Override
-	public void addX(int X) {
+	public void addX(float X) {
 		// TODO Auto-generated method stub
       x+=X;
 	}
 
 	@Override
-	public void addY(int Y) {
+	public void addY(float Y) {
 		// TODO Auto-generated method stub
      y+=Y;
 	}
 
 	@Override
-	public void subX(int X) {
+	public void subX(float X) {
 		// TODO Auto-generated method stub
       x-=X;
 	}
 
 	@Override
-	public void subY(int Y) {
+	public void subY(float Y) {
 		// TODO Auto-generated method stub
       y-=Y;
 	}
 
 	@Override
 	public abstract void draw(Canvas canvas);
-	protected int x;
-	protected int y;
+	protected float x;
+	protected float y;
 	protected Paint paint=null;
 
 }
