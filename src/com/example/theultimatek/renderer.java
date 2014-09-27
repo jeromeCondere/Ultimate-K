@@ -53,12 +53,12 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		p.setColor(Color.rgb(255, 0, 0));
 		p.setTextSize(25);
 		
-		c1=new Circle(20,20,10,p);
+		c1=new Circle(100,100,40,p);
 		setWindowParam(context);
 		this.setOnTouchListener(this);
 		xTouch=0;
 		yTouch=0;
-		 ball=new Ball(Ball.STATE.ACTIVE,Ball.COLOR.BLACK,Ball.SPEED.NORMAL,10,30,120,120,25);
+		 ball=new Ball(Ball.STATE.ACTIVE,Ball.COLOR.BLACK,Ball.SPEED.NORMAL,50,80,120,120,25);
 		 ball.setUpWindowParam(context);
 		
 	}
@@ -68,7 +68,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		Display display = wm.getDefaultDisplay();
 		//Point size = new Point();
 		//display.getSize(size);
-		//deprecie
+		//deprecated
 		w=this.getWidth();
 		h=this.getHeight();
 		 width = display.getWidth();
@@ -182,6 +182,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 	            }
 	        }
 	    }
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event)
 	{
@@ -202,6 +203,15 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 					xTouch=(int)event.getX();
 					yTouch=(int)event.getY();
 					isTouched=false;
+					float X=ball.getX();
+					float Y=ball.getY();
+					float dSquare=(X-xTouch)*(X-xTouch)+(Y-yTouch)*(Y-yTouch);
+					float rSquare=ball.getRadius()*ball.getRadius();
+					
+					if(dSquare<=rSquare)
+					{
+						ball.instaKill();
+					}
 					return true;
 				}
 			}

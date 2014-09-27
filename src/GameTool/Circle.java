@@ -27,6 +27,20 @@ public class Circle extends AbstractGraphics {
 	{
 		return radius;
 	}
+	public void addRadius(float addR)
+	{
+		if((addR+radius)>=0)
+			radius+=addR;
+	}
+	public void subRadius(float subR)
+	{
+		if((radius-subR)>=0)
+			radius-=subR;
+	}
+	public void setRadius(float r)
+	{
+		radius=r;
+	}
 	@Override
 	public void draw(Canvas canvas) {
 		// TODO Auto-generated method stub

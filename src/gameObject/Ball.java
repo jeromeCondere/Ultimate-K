@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 import GameTool.Circle;
+import GameTool.GameTimer;
 
 public class Ball extends Abstract_Object implements Object_interface {
 
@@ -25,7 +26,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		p.setStyle(Paint.Style.FILL);
 		this.initColor(COLOR.BLACK, p);
 		circle=new Circle(0,0,minRadius,p);
-		
+		timer=new GameTimer();
 		//default parameters
 	}
 	public Ball(int initX,int initY)
@@ -40,6 +41,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		p.setStyle(Paint.Style.FILL);
 		this.initColor(COLOR.BLACK, p);
 		circle=new Circle(initX,initY,minRadius,p);
+		timer=new GameTimer();
 	}
 	public Ball(STATE state,COLOR color,SPEED speed)
 	{
@@ -52,6 +54,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		p.setStyle(Paint.Style.FILL);
 		this.initColor(color, p);
 		circle=new Circle(0,0,minRadius,p);//default position is (0,0)
+		timer=new GameTimer();
 	}
 	
 	public Ball(STATE state,COLOR color,SPEED speed,float minR,float maxR,float angle)
@@ -64,6 +67,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		p.setStyle(Paint.Style.FILL);
 		this.initColor(color, p);
 		circle=new Circle(0,0,minRadius,p);//default position is (0,0)
+		timer=new GameTimer();
 	}
 	public Ball(STATE state,COLOR color,SPEED speed,float minR,float maxR,float X,float Y,float angle)
 	{
@@ -75,8 +79,18 @@ public class Ball extends Abstract_Object implements Object_interface {
 		p.setStyle(Paint.Style.FILL);
 		this.initColor(color, p);
 		circle=new Circle(X,Y,minRadius,p);//default position is (X,Y)
+		timer=new GameTimer();
 	}
-	
+	public Ball(STATE state,COLOR color,SPEED speed,Paint p,float minR,float maxR,float X,float Y,float angle)
+	{
+		init(minR,maxR,angle);//default params
+		activeState=state;
+		activeColor=color;
+		activeSpeed=speed;
+		this.initColor(color, p);
+		circle=new Circle(X,Y,minRadius,p);//default position is (X,Y)
+		timer=new GameTimer();
+	}
 	
 	
 	private void init(float minR,float maxR,float Angle)
@@ -139,16 +153,24 @@ public class Ball extends Abstract_Object implements Object_interface {
 	@Override
 	public void update() 
 	{
-		// TODO Auto-generated method stub
+		// we must not initialize object here since this function will be called in the render loop via Ball Handler
+		
+		
 		// the ball is moving along a line determine by the angle
 		//y=tan(angle)x +b
+		//the context window is needed for collision
 		if(this.ContextHeight==0||this.ContextWidth==0)//if context has not been set up the we don't update
 			return;
-		//the context window is needed for collision
 		
-		Resources res = context.getResources();
+		if(this.activeState==STATE.INSTAKILLED)
+		{
+			destroy();
+			return;
+		}
+		
+		
 		float r =4;
-		switch(activeSpeed)
+		switch(activeSpeed)//avance dip->px of speed
 		{
 		case SLOW :
 			
@@ -185,7 +207,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		    circle.addY(addY);
 		    circle.addX(addX);
 			}
-			else if (circle.getX()>=wlimit)//right border collision
+			if (circle.getX()>=wlimit)//right border collision
 			{
 				angle=180-angle;
 				 angleRad=Math.toRadians(angle);
@@ -195,7 +217,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 				 circle.addX(addX);
 				
 			}
-			else if (circle.getY()>=hlimit)//bottom border collision
+			 if (circle.getY()>=hlimit)//bottom border collision
 			{
 				angle=-angle;
 				 angleRad=Math.toRadians(angle);
@@ -206,7 +228,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 				
 				
 			} 
-			else if (circle.getY()<=0)//top border collision
+			 if ((circle.getY()-circle.getRadius())<=0)//top border collision
 			{
 				angle=-angle;
 				 angleRad=Math.toRadians(angle);
@@ -217,7 +239,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 				
 				
 			} 
-			else if (circle.getX()<=0)//left border collision
+			 if ((circle.getX()-circle.getRadius())<=0)//left border collision
 			{
 				angle=180-angle;
 				 angleRad=Math.toRadians(angle);
@@ -229,20 +251,132 @@ public class Ball extends Abstract_Object implements Object_interface {
 				
 			}
 			
+			sizeChanging();
 		}
 		
 		
 	}
+	
+	private boolean grow(int fps)//the function return false while the ball is growing to maxRadius
+	{
+		final int parts=25;
+		if(n%3!=0)
+		{
+			n=0;
+			return false;
+		}
+		
+		if(fps<0)
+			return false;
+		if(circle.getRadius()>=minRadius && circle.getRadius()<maxRadius)
+		{
+			float addR=(maxRadius-minRadius)/parts;
+			n++;
+			circle.addRadius(addR);
+			return false;
+		}
+		else if(circle.getRadius()>=maxRadius)//finish growing
+		{
+			if(circle.getRadius()!=maxRadius)
+			circle.setRadius(maxRadius);
+			isGrowing=false;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean reduce(int fps)//the function return false while the ball is reducing to minRadius
+	{
+		final int parts=25;
+		if(n%3!=0)
+		{
+			n=0;
+			return false;
+		}
+		
+		if(fps<0)
+			return false;
+		if(circle.getRadius()>minRadius && circle.getRadius()<=maxRadius)
+		{
+			float subR=(maxRadius-minRadius)/parts;
+			n++;
+			circle.subRadius(subR);
+			return false;
+		}
+		else if(circle.getRadius()<=minRadius)//finish reducing
+		{
+			if(circle.getRadius()!=minRadius)
+			circle.setRadius(minRadius);
+			isGrowing=true;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private void sizeChanging()
+	{
+		
+		if(activeColor==COLOR.BLUE)
+		{
+			
+			if( isGrowing)
+			{
+				/*if(timer.switched)
+				{
+					timer.switched=false;
+					timer.restart();
+				}
+				if(timer.run(1000)==1)//if there is more than 1 sec elapsed
+				{*/
+				grow(20);
+				return;
+				//}
+			}
+			else
+			{
+				/*if(!timer.switched)
+				{
+					timer.switched=true;
+					timer.restart();
+				}
+				if(timer.run(1000)==1)*/
+				reduce(20);
+			}
+		}
+	}
+	
+	private void destroy()//
+	{
+		if(activeState==STATE.KILLED ||activeState==STATE.INSTAKILLED)
+		{
+		}
+	}
+	public void instaKill()
+	{
+		if(activeState==STATE.ACTIVE )//we can't kill a ball that was paused or inactive
+		{
+			activeState=STATE.INSTAKILLED;
+			circle.setRadius(0);
+		}
+	}
+	
 	@Override
 	public void draw(Canvas canvas) {
 		// TODO Auto-generated method stub
-		if(this.ContextHeight==0||this.ContextWidth==0)//if context has not been set up the we don't draw
+		if(this.ContextHeight==0||this.ContextWidth==0||circle.getRadius()<=0)//if context has not been set up the we don't draw
 			return;
 		
 		
 		if(canvas!=null)
-		circle.draw(canvas);
+		{
+			//if(activeState!=STATE.INSTAKILLED)
+		     circle.draw(canvas);
+		}
 	}
+	
+	
 public void setUpWindowParam(Context context)	
 {
 	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -250,23 +384,43 @@ public void setUpWindowParam(Context context)
 	//Point size = new Point();
 	//display.getSize(size);
 	
-	
+	res = context.getResources();
 	 this.ContextWidth = display.getWidth();//deprecated
 	 this.ContextHeight = display.getHeight();//depracated
 	 this.context=context;
+	 
 }
 	
+
+public float getX()
+{
+	return circle.getX();
+}
+public float getY()
+{
+	return circle.getX();
+}
+
+public float getRadius()
+{
+	return circle.getRadius();
+}
 private Circle circle;
 
 //---------enums--------------
-public enum STATE{ACTIVE,INACTIVE,PAUSED}
+public enum STATE{ACTIVE,INACTIVE,PAUSED,KILLED,INSTAKILLED,DESTROYED}
 public enum COLOR{RED,BLUE,BLACK,PINK};
 public enum SPEED{SLOW,NORMAL,FAST,SUPER_FAST,NONE};
 //----------------
 private SPEED activeSpeed;
 private STATE activeState;
 private COLOR activeColor;
-private float minRadius,maxRadius;//the ball radiusis between min and max
+private float minRadius,maxRadius;//the ball radius between min and max
 private float angle;
 
+private boolean isGrowing=true;
+private int n;
+
+private Resources res;
+private GameTimer timer;
 }
