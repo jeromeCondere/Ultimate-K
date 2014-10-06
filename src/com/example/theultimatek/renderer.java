@@ -1,7 +1,9 @@
 package com.example.theultimatek;
 
 import gameObject.Ball;
+import gameObject.BallHandler;
 import GameTool.Circle;
+import GameTool.GameSignal;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,6 +34,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 	private int xTouch,yTouch;
 	Bitmap b,b1;
 	Ball ball;
+	BallHandler Handler,HandlerG;
 	private boolean isTouched=false;
 	
 	private Circle c1;
@@ -52,13 +55,14 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		p.setStyle(Paint.Style.FILL);
 		p.setColor(Color.rgb(255, 0, 0));
 		p.setTextSize(25);
-		
-		c1=new Circle(100,100,40,p);
+		Handler=new BallHandler(5, Ball.COLOR.BLACK,context);
+		HandlerG=new BallHandler(2, Ball.COLOR.RED,context);
+		HandlerG.setFrequency(2000f);
 		setWindowParam(context);
 		this.setOnTouchListener(this);
 		xTouch=0;
 		yTouch=0;
-		 ball=new Ball(Ball.STATE.ACTIVE,Ball.COLOR.BLACK,Ball.SPEED.NORMAL,50,80,120,120,25);
+		 ball=new Ball(Ball.STATE.ACTIVE,Ball.COLOR.GREEN,Ball.SPEED.NORMAL,50,80,120,120,25);
 		 ball.setUpWindowParam(context);
 		
 	}
@@ -89,29 +93,19 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 			p.setTextSize(25);
 			//canvas.drawBitmap(b,0,0,p);
 			canvas.drawColor(Color.rgb(255, 255, 255));
-			canvas.drawText("xTouch= "+xTouch+"\n yTouch= "+yTouch+" ", 0, 20, p);
-			canvas.drawText("width= "+w+" height= "+ h, 0, 70, p);
+			canvas.drawText("xTouch= "+xTouch+"  yTouch= "+yTouch+" ", 0, 20, p);
 			
 			
 			
-			c1.draw(canvas);
+			//c1.draw(canvas);
 			//i.rotate(2f);
-			i.draw(canvas);
+			//i.draw(canvas);
+			Handler.update();
+			Handler.draw(canvas);
+			HandlerG.update();
+			HandlerG.draw(canvas);
 			
-			ball.update();
-			ball.draw(canvas);
 			
-			
-			/*if(n!=0)
-			{
-			canvas.drawText("arrrwa", 100, n, p);
-			}
-			else
-			{
-				canvas.drawText("anyway", 100, 40, p);
-			}
-			c.draw(canvas);
-		    */
 		
 		
 	}
@@ -203,14 +197,22 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 					xTouch=(int)event.getX();
 					yTouch=(int)event.getY();
 					isTouched=false;
-					float X=ball.getX();
+					/*float X=ball.getX();
 					float Y=ball.getY();
-					float dSquare=(X-xTouch)*(X-xTouch)+(Y-yTouch)*(Y-yTouch);
+					float dx=(X-xTouch);
+					float dy=(Y-yTouch);
+					float dSquare=(dx*dx)+(dy*dy);
 					float rSquare=ball.getRadius()*ball.getRadius();
 					
 					if(dSquare<=rSquare)
 					{
 						ball.instaKill();
+					}
+					*/
+					Handler.onTouch(v, event);
+					if(HandlerG.onTouch(v, event))
+					{
+						HandlerG.sendSignal(new GameSignal(xTouch,yTouch,300,GameSignal.TYPE.RED_TOUCH),Handler);
 					}
 					return true;
 				}

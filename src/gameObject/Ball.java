@@ -123,6 +123,9 @@ public class Ball extends Abstract_Object implements Object_interface {
 		case PINK :
 			p.setColor(Color.rgb(255, 174,201));
 			break;
+		case GREEN :
+			p.setColor(Color.rgb(34, 177,76));
+			break;
 		
 		}
 	}
@@ -164,7 +167,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		
 		if(this.activeState==STATE.INSTAKILLED)
 		{
-			destroy();
+			//destroy();
 			return;
 		}
 		
@@ -180,6 +183,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 			r = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, res.getDisplayMetrics());
 			break;
 		case NONE :
+			r = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, res.getDisplayMetrics());
 			break;
 		case NORMAL :
 			r = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, res.getDisplayMetrics());
@@ -187,6 +191,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		case SUPER_FAST :
 			r = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9, res.getDisplayMetrics());
 			break;
+		
 		
 		}
 		
@@ -377,19 +382,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 	}
 	
 	
-public void setUpWindowParam(Context context)	
-{
-	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-	Display display = wm.getDefaultDisplay();
-	//Point size = new Point();
-	//display.getSize(size);
-	
-	res = context.getResources();
-	 this.ContextWidth = display.getWidth();//deprecated
-	 this.ContextHeight = display.getHeight();//depracated
-	 this.context=context;
-	 
-}
+
 	
 
 public float getX()
@@ -398,18 +391,66 @@ public float getX()
 }
 public float getY()
 {
-	return circle.getX();
+	return circle.getY();
 }
 
 public float getRadius()
 {
 	return circle.getRadius();
 }
+public Ball.STATE getState()
+{
+	return activeState;
+}
+public void slow()
+{
+	/*
+	 activeSpeed=NONE;
+	  
+	 */
+	 
+	switch(activeSpeed)
+	{
+	case SLOW :
+		activeSpeed=SPEED.NONE;
+		break;
+	case NORMAL :
+		activeSpeed=SPEED.SLOW;
+		break;
+	default :
+		activeSpeed=SPEED.NORMAL;
+		break;
+	}
+	
+	
+}
+public void Accelerate()
+{
+	
+	 
+	switch(activeSpeed)
+	{
+	case NONE :
+		activeSpeed=SPEED.NORMAL;
+		break;
+	case SLOW :
+		activeSpeed=SPEED.NORMAL;
+		break;
+	case NORMAL :
+		activeSpeed=SPEED.FAST;
+		break;
+	default :
+		activeSpeed=SPEED.SUPER_FAST;
+		break;
+	}
+	
+	
+}
 private Circle circle;
 
 //---------enums--------------
-public enum STATE{ACTIVE,INACTIVE,PAUSED,KILLED,INSTAKILLED,DESTROYED}
-public enum COLOR{RED,BLUE,BLACK,PINK};
+public enum STATE{ACTIVE,INACTIVE,PAUSED,KILLED,INSTAKILLED};
+public enum COLOR{RED,BLUE,BLACK,PINK,GREEN};
 public enum SPEED{SLOW,NORMAL,FAST,SUPER_FAST,NONE};
 //----------------
 private SPEED activeSpeed;
@@ -421,6 +462,6 @@ private float angle;
 private boolean isGrowing=true;
 private int n;
 
-private Resources res;
+
 private GameTimer timer;
 }
