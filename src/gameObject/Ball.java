@@ -28,6 +28,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		circle=new Circle(0,0,minRadius,p);
 		timer=new GameTimer();
 		//default parameters
+		initOuterCircleParam();
 	}
 	public Ball(int initX,int initY)
 	{
@@ -42,6 +43,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		this.initColor(COLOR.BLACK, p);
 		circle=new Circle(initX,initY,minRadius,p);
 		timer=new GameTimer();
+		initOuterCircleParam();
 	}
 	public Ball(STATE state,COLOR color,SPEED speed)
 	{
@@ -55,6 +57,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		this.initColor(color, p);
 		circle=new Circle(0,0,minRadius,p);//default position is (0,0)
 		timer=new GameTimer();
+		initOuterCircleParam();
 	}
 	
 	public Ball(STATE state,COLOR color,SPEED speed,float minR,float maxR,float angle)
@@ -68,6 +71,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		this.initColor(color, p);
 		circle=new Circle(0,0,minRadius,p);//default position is (0,0)
 		timer=new GameTimer();
+		initOuterCircleParam();
 	}
 	public Ball(STATE state,COLOR color,SPEED speed,float minR,float maxR,float X,float Y,float angle)
 	{
@@ -80,6 +84,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		this.initColor(color, p);
 		circle=new Circle(X,Y,minRadius,p);//default position is (X,Y)
 		timer=new GameTimer();
+		initOuterCircleParam();
 	}
 	public Ball(STATE state,COLOR color,SPEED speed,Paint p,float minR,float maxR,float X,float Y,float angle)
 	{
@@ -90,6 +95,7 @@ public class Ball extends Abstract_Object implements Object_interface {
 		this.initColor(color, p);
 		circle=new Circle(X,Y,minRadius,p);//default position is (X,Y)
 		timer=new GameTimer();
+		initOuterCircleParam();
 	}
 	
 	
@@ -129,6 +135,21 @@ public class Ball extends Abstract_Object implements Object_interface {
 		
 		}
 	}
+	private void initOuterCircleParam()
+	{
+		if(this.outerCirclePaint==null)
+			
+		{
+			outerCirclePaint=new Paint( Paint.ANTI_ALIAS_FLAG );
+			outerCirclePaint.setStyle(Paint.Style.STROKE);
+			outerCirclePaint.setStrokeWidth(2f);
+			this.initColor(COLOR.BLACK, outerCirclePaint);
+		}
+		
+		if(this.outerCircle==null)
+			this.outerCircle=new Circle(0,0,10,outerCirclePaint);
+	}
+	
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
@@ -257,6 +278,9 @@ public class Ball extends Abstract_Object implements Object_interface {
 			}
 			
 			sizeChanging();
+			this.outerCircle.setX(circle.getX());
+			this.outerCircle.setY(circle.getY());
+			this.outerCircle.setRadius(circle.getRadius());
 		}
 		
 		
@@ -378,6 +402,8 @@ public class Ball extends Abstract_Object implements Object_interface {
 		{
 			//if(activeState!=STATE.INSTAKILLED)
 		     circle.draw(canvas);
+		     if(activeColor!=COLOR.BLACK)
+		    	 this.outerCircle.draw(canvas);
 		}
 	}
 	
@@ -447,6 +473,9 @@ public void Accelerate()
 	
 }
 private Circle circle;
+private   Circle outerCircle;
+private static Paint  outerCirclePaint;
+
 
 //---------enums--------------
 public enum STATE{ACTIVE,INACTIVE,PAUSED,KILLED,INSTAKILLED};

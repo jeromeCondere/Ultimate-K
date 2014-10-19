@@ -30,8 +30,11 @@ public class BallHandler implements Object_interface
 		maxSize=10;
 	 
 	 timer=new GameTimer();
+	 if(paint==null)
+	 {
 	 paint=new Paint(Paint.ANTI_ALIAS_FLAG);
 	 paint.setStyle(Paint.Style.FILL);
+	 }
 	 balls=new ArrayList<Ball>();
 	  signalList=new ArrayList<GameSignal>();
 	 frequency=1000;//100ms
@@ -581,13 +584,13 @@ public class BallHandler implements Object_interface
 
  private ArrayList<Ball> balls;
  private int maxSize;
- private Paint paint;
+ private  Paint paint;
  private float frequency;//time between two apparition of balls en ms
  private GameTimer timer;
  public enum MODE{EASY,NORMAL,HARD,VERY_HARD,EXTREMELY_HARD};
  private MODE activeMode;
  private Ball.COLOR colorHandler;
- private int score;
+ private  int score;
  private int Kx,Ky;
  private int ContextWidth;
  private int ContextHeight;

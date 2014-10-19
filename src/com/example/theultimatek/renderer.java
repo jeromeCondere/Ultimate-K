@@ -56,7 +56,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		p.setColor(Color.rgb(255, 0, 0));
 		p.setTextSize(25);
 		Handler=new BallHandler(5, Ball.COLOR.BLACK,context);
-		HandlerG=new BallHandler(2, Ball.COLOR.RED,context);
+		HandlerG=new BallHandler(2, Ball.COLOR.GREEN,context);
 		HandlerG.setFrequency(2000f);
 		setWindowParam(context);
 		this.setOnTouchListener(this);
@@ -212,7 +212,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 					Handler.onTouch(v, event);
 					if(HandlerG.onTouch(v, event))
 					{
-						HandlerG.sendSignal(new GameSignal(xTouch,yTouch,300,GameSignal.TYPE.RED_TOUCH),Handler);
+						HandlerG.sendSignal(new GameSignal(xTouch,yTouch,300,GameSignal.TYPE.GREEN_TOUCH),Handler);
 					}
 					return true;
 				}
