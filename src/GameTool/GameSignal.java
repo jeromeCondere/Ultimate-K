@@ -9,9 +9,23 @@ public class GameSignal
 		y=cy;
 		radius=R;
 	}
+	public GameSignal(TYPE t)
+	{
+		type=t;
+		
+	}
+	public GameSignal(TYPE t,int index)
+	{
+		type=t;
+		if(index>-1)
+		this.index=index;
+	}
+	
 public float x;
 public float y;
 public float radius;
+
 public TYPE type;
-public enum TYPE{PINK_TOUCH,RED_TOUCH,GREEN_TOUCH,K_TOUCH};
+public int index=-1;
+public enum TYPE{PINK_TOUCH,RED_TOUCH,GREEN_TOUCH,K_TOUCH,K_HIT,KILL_ORDER};
 }

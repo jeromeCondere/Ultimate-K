@@ -38,7 +38,7 @@ public class BallHandler implements Object_interface
 	 balls=new ArrayList<Ball>();
 	  signalList=new ArrayList<GameSignal>();
 	 frequency=1000;//100ms
-	 activeMode=MODE.NORMAL;
+	 activeMode=MODE.EASY;
 	 WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		//Point size = new Point();
@@ -389,6 +389,11 @@ public class BallHandler implements Object_interface
 		 handler.signalList.add(sig);
 	 }
  }
+ public void sendSignal(GameSignal sig,KHandler k)
+ {
+	 
+	 k.receiveSignal(sig);
+ }
  private void treatSignalList()
  {
 	 if(this.signalList.isEmpty())
@@ -460,11 +465,30 @@ public class BallHandler implements Object_interface
 		 balls.get(i).instaKill();
 		 }
 		 break;
+		 
+	 case KILL_ORDER :
+		 if(signal.index!=-1)
+		 {
+			 balls.get(signal.index).instaKill();
+		 }
+		 
+		 break;
 	 
 	 }
 	 
 	 this.signalList.remove(0);
  }
+ public void receiveSignal(GameSignal sig ,GlobalHandler g)//BallHandler receive signal from gbHandler
+ {
+	 if(sig!=null && g!=null)
+		 signalList.add(sig);
+ }
+ public void receiveSignal(GameSignal sig ,KHandler k)//BallHandler receive signal from KHandler
+ {
+	 if(sig!=null && k!=null)
+		 signalList.add(sig);
+ }
+
  public void update()
  {
 	 treatSignalList();
@@ -581,7 +605,17 @@ public class BallHandler implements Object_interface
 		
 		return result;//result is true if a ball has been touched
  }
-
+ public Ball getBall(int i,GlobalHandler g)
+ {
+	 if(i>=balls.size() || g==null)
+	 return null;
+	 
+	 return balls.get(i);
+ }
+ public int getSize()
+ {
+	 return balls.size();
+ }
  private ArrayList<Ball> balls;
  private int maxSize;
  private  Paint paint;

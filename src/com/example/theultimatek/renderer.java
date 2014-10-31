@@ -2,6 +2,7 @@ package com.example.theultimatek;
 
 import gameObject.Ball;
 import gameObject.BallHandler;
+import gameObject.GlobalHandler;
 import GameTool.Circle;
 import GameTool.GameSignal;
 import android.annotation.SuppressLint;
@@ -35,6 +36,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 	Bitmap b,b1;
 	Ball ball;
 	BallHandler Handler,HandlerG;
+	GlobalHandler gb;
 	private boolean isTouched=false;
 	
 	private Circle c1;
@@ -48,7 +50,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		// TODO Auto-generated constructor stub
 		 b=Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
 		 b1=BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-		  i=new GameTool.Image(40,40,b1);
+		 i=new GameTool.Image(40,40,b1);
 		n=0;
 		
 		Paint p=new Paint();
@@ -64,6 +66,7 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 		yTouch=0;
 		 ball=new Ball(Ball.STATE.ACTIVE,Ball.COLOR.GREEN,Ball.SPEED.NORMAL,50,80,120,120,25);
 		 ball.setUpWindowParam(context);
+		 gb=new GlobalHandler(context);
 		
 	}
 	private void setWindowParam( Context context)//obtenir la taille de la view
@@ -100,12 +103,14 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 			//c1.draw(canvas);
 			//i.rotate(2f);
 			//i.draw(canvas);
+			/*
 			Handler.update();
 			Handler.draw(canvas);
 			HandlerG.update();
 			HandlerG.draw(canvas);
-			
-			
+			*/
+			gb.update();
+			gb.draw(canvas);
 		
 		
 	}
@@ -209,11 +214,12 @@ public class renderer extends SurfaceView implements SurfaceHolder.Callback,View
 						ball.instaKill();
 					}
 					*/
-					Handler.onTouch(v, event);
-					if(HandlerG.onTouch(v, event))
-					{
-						HandlerG.sendSignal(new GameSignal(xTouch,yTouch,300,GameSignal.TYPE.GREEN_TOUCH),Handler);
-					}
+					//Handler.onTouch(v, event);
+					//f(HandlerG.onTouch(v, event))
+					//{
+					//	HandlerG.sendSignal(new GameSignal(xTouch,yTouch,300,GameSignal.TYPE.GREEN_TOUCH),Handler);
+					//}
+					gb.onTouch(v, event);
 					return true;
 				}
 			}
